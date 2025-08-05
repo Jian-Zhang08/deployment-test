@@ -1,0 +1,23 @@
+services:
+  deploymenttest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deploymenttest-app
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    networks:
+      - deploymenttest-network
+
+networks:
+  deploymenttest-network:
+    driver: bridge 
